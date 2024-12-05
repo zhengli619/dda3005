@@ -1,0 +1,54 @@
+Converged after 844 iterations.
+Largest Eigenvalue: 55.000000000000476
+Corresponding Eigenvector: [ 8.16496581e-01 -2.01858732e-18  4.08248290e-01  1.07600797e-14
+  4.08248290e-01] 
+
+Converged after 10 iterations with shift 0.
+Eigenvalue with shift 0: 1.000000000000016
+Corresponding Eigenvector with shift 0: [ 7.07106781e-01  8.73963191e-16 -7.07106781e-01 -4.99799766e-15  
+ -7.26855813e-16]
+
+Converged after 43 iterations with shift 46.
+Eigenvalue with shift 46: 54.99999999999984
+Corresponding Eigenvector with shift 46: [ 8.16496581e-01  1.54220071e-14  4.08248290e-01 -0.00000000e+00 
+  4.08248290e-01]
+
+Converged after 26 iterations with shift -32.
+Eigenvalue with shift -32: -25.999999999999826
+Corresponding Eigenvector with shift -32: [-2.04964251e-15  3.01511345e-01 -2.03834218e-17 -9.04534034e-01
+  3.01511345e-01]
+
+Converged after 45 iterations with shift 19.
+Eigenvalue with shift 19: 28.00000000000022
+Corresponding Eigenvector with shift 19: [ 3.01511345e-01 -3.01511345e-01  2.56562789e-14 -3.75715719e-17 
+ -9.04534034e-01]
+
+Converged after 26 iterations with shift -47.
+Eigenvalue with shift -47: -53.00000000000018
+Corresponding Eigenvector with shift -47: [-3.01511345e-01  2.20284202e-15  8.71030337e-18  9.04534034e-01
+ -3.01511345e-01]
+
+Converged after 5 iterations
+Eigenvalue with initial vector [1 0 0 0 0]:55.00000000000001
+Corresponding Eigenvector: [-8.16496581e-01  1.23358114e-17 -4.08248290e-01 -1.49217005e-18
+ -4.08248290e-01]
+
+Converged after 7 iterations
+Eigenvalue with initial vector [0 1 0 0 0]:-25.999999999999996
+Corresponding Eigenvector: [ 0.00000000e+00 -3.01511345e-01  7.24709226e-18  9.04534034e-01
+ -3.01511345e-01]
+
+Converged after 8 iterations
+Eigenvalue with initial vector [0 0 1 0 0]:1.000000000000003
+Corresponding Eigenvector: [-7.07106781e-01 -1.66999388e-17  7.07106781e-01  2.32606290e-17
+ -7.75354301e-18]
+
+Converged after 6 iterations
+Eigenvalue with initial vector [0 0 0 1 0]:-53.000000000000014
+Corresponding Eigenvector: [-3.01511345e-01  7.25739331e-17  8.69832854e-18  9.04534034e-01
+ -3.01511345e-01]
+
+Converged after 6 iterations
+Eigenvalue with initial vector [0 0 0 0 1]:27.999999999999996
+Corresponding Eigenvector: [ 3.01511345e-01 -3.01511345e-01  2.92170706e-32  1.09564015e-32
+ -9.04534034e-01]

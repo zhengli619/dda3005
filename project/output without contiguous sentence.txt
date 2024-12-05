@@ -1,0 +1,138 @@
+Starting blurring process...
+
+Blurring 1250_m3_original.png...
+Blurring 2048_mountain_original.png...
+Blurring 640_lizard_original.png...
+
+Blurring process completed.
+
+
+Starting recovery using LU decomposition...
+
+Deblurring 1250_m3_blurred.png using LU decomposition...
+Performing SVD decomposition...
+SVD decomposition completed.
+Recovered image using LU in 1.9316 seconds.
+Relative Forward Error (LU): 0.053998
+the peak-signal-to-noise ratio:  26.95815254547493
+
+Deblurring 2048_mountain_blurred.png using LU decomposition...
+Performing SVD decomposition...
+SVD decomposition completed.
+Recovered image using LU in 6.7615 seconds.
+Relative Forward Error (LU): 0.132707
+the peak-signal-to-noise ratio:  21.69519480720341
+
+Deblurring 640_lizard_blurred.png using LU decomposition...
+Performing SVD decomposition...
+SVD decomposition completed.
+Recovered image using LU in 0.3513 seconds.
+Relative Forward Error (LU): 0.370576
+the peak-signal-to-noise ratio:  17.659759755699742
+
+Recovery using LU decomposition completed.
+
+
+
+Starting recovery using QR decomposition...
+
+Deblurring 1250_m3_blurred.png using QR decomposition...
+Recovered image using QR in 2.1140 seconds.
+Relative Forward Error (QR): 0.040893
+the peak-signal-to-noise ratio:  29.372655430094984
+
+Deblurring 2048_mountain_blurred.png using QR decomposition...
+Recovered image using QR in 8.2094 seconds.
+Relative Forward Error (QR): 0.105331
+the peak-signal-to-noise ratio:  23.701932274351943
+
+Deblurring 640_lizard_blurred.png using QR decomposition...
+Recovered image using QR in 0.3972 seconds.
+Relative Forward Error (QR): 0.212602
+the peak-signal-to-noise ratio:  22.48593714239871
+
+Recovery using QR decomposition completed.
+
+
+
+Starting recovery using my own householder QR decomposition...
+
+Deblurring 1250_m3_blurred.png using my own householder QR decomposition...
+Recovered image using my own householderQR in 25.0052 seconds.
+Relative Forward Error (QR): 0.040893
+the peak-signal-to-noise ratio:  29.372655430094987
+
+Deblurring 2048_mountain_blurred.png using my own householder QR decomposition...
+Recovered image using my own householderQR in 76.4466 seconds.
+Relative Forward Error (QR): 0.105331
+the peak-signal-to-noise ratio:  23.70193227435194
+
+Deblurring 640_lizard_blurred.png using my own householder QR decomposition...
+Recovered image using my own householderQR in 2.1973 seconds.
+Relative Forward Error (QR): 0.212602
+the peak-signal-to-noise ratio:  22.48593714239871
+
+Recovery using my own householder QR decomposition completed.
+
+
+
+Starting recovery using my own householder pivoting QR decomposition...
+
+Deblurring 1250_m3_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 16.0354 seconds.
+Relative Forward Error (QR): 0.047050
+the peak-signal-to-noise ratio:  28.154399026506614
+
+Deblurring 2048_mountain_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 121.0312 seconds.
+Relative Forward Error (QR): 0.106369
+the peak-signal-to-noise ratio:  23.616757287571136
+
+Deblurring 640_lizard_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 2.2657 seconds.
+Relative Forward Error (QR): 0.215713
+the peak-signal-to-noise ratio:  22.35975955137913
+
+Recovery using my own householder pivoting QR decomposition completed.
+
+
+
+Starting recovery using scipy pivoting QR decomposition...
+
+Deblurring 1250_m3_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 17.1790 seconds.
+Relative Forward Error (QR): 0.047050
+the peak-signal-to-noise ratio:  28.154399026506614
+
+Deblurring 2048_mountain_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 120.0763 seconds.
+Relative Forward Error (QR): 0.106369
+the peak-signal-to-noise ratio:  23.616757287571136
+
+Deblurring 640_lizard_blurred.png using my own householder with pivoting QR decomposition...
+Recovered image using my own householder pivoting QR in 2.1402 seconds.
+Relative Forward Error (QR): 0.215713
+the peak-signal-to-noise ratio:  22.35975955137913
+
+Recovery using scipy pivoting QR decomposition completed.
+
+
+
+Starting recovery using  QR decomposition with R converted nonsingular..
+
+Deblurring 1250_m3_blurred.png using QR decomposition with R converted nonsingular...
+Recovered image using QR with R converted nonsingular in 1.1385 seconds.
+Relative Forward Error (QR): 0.053998
+the peak-signal-to-noise ratio:  26.958152546110252
+
+Deblurring 2048_mountain_blurred.png using QR decomposition with R converted nonsingular...
+Recovered image using QR with R converted nonsingular in 5.1885 seconds.
+Relative Forward Error (QR): 0.139713
+the peak-signal-to-noise ratio:  21.24836479826227
+
+Deblurring 640_lizard_blurred.png using QR decomposition with R converted nonsingular...
+Recovered image using QR with R converted nonsingular in 0.1743 seconds.
+Relative Forward Error (QR): 0.370576
+the peak-signal-to-noise ratio:  17.659759755699046
+
+Recovery using scipy pivoting QR decomposition with R converted nonsingular completed.

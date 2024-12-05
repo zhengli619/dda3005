@@ -1,0 +1,351 @@
+import numpy as np
+from PIL import Image
+from numpy import asarray
+from matplotlib import image
+from matplotlib import pyplot as plt
+import os
+from scipy.linalg import qr, svd, lu_factor, lu_solve, solve_triangular
+from scipy.sparse import csr_matrix
+
+
+source_image_dir= r'C:\dda3005\project\source_images'
+blurred_image_dir = r'C:\dda3005\project\blurred_images'
+recovered_image_dir_LU = r'C:\dda3005\project\recovered_images_LU'
+recovered_image_dir_QR = r'C:\dda3005\project\recovered_images_QR'
+
+# Parameters for Aleft
+j_Aleft = 2
+k_Aleft = 5
+# Parameters for Aright
+j_Aright = 0
+k_Aright = 20 # meaning the motion looks like moving to right
+
+blurred_image_path=r'C:\dda3005\project\blurred_images\2048_mountain_blurred.png'
+
+class MotionTypeBlurringMatrix:
+    def __init__(self, n, k, j=0):
+        """
+        Initialize the parameters for the motion type blurring matrix.
+        
+        :param n: Dimension of the matrix (n x n)
+        :param k: Parameter k
+        :param j: Parameter j, default is 0
+        """
+        self.n = n
+        self.k = k
+        self.j = j
+        self.a_dictionary_for_blurring_matrix = {}  # Dictionary to store a_i values
+        self.blurring_matrix = np.zeros((n, n))  # Initialize the matrix as a zero matrix
+        
+        # Initialize the a_i values in the dictionary
+        self._initialize_a_dictionary_for_blurring_matrix()
+        
+        # Create the motion type blurring matrix based on the a_i values
+        self._create_blurring_matrix()
+
+    def _initialize_a_dictionary_for_blurring_matrix(self):
+        """
+        Initialize the dictionary a_i where a_i are the weight values needed for the matrix.
+        """
+        for i in range(1, 2 * self.n):
+            self.a_dictionary_for_blurring_matrix[f'a_{i}'] = 0  # Initialize to 0 by default
+        for i in range(0, self.k):
+            self.a_dictionary_for_blurring_matrix[f'a_{self.n + self.j - i}'] = (2 / (self.k * (self.k + 1))) * (self.k - i)
+
+    def _create_blurring_matrix(self):
+        """
+        Fill the motion type blurring matrix based on the initialized dictionary a_i.
+        """
+        # Fill the upper triangle part of the matrix (n x n)
+        for i in range(1, self.n + 1):
+            for j in range(1, i + 1):
+                self.blurring_matrix[j - 1, self.n - i + j - 1] = self.a_dictionary_for_blurring_matrix[f'a_{i}']
+        
+        # Fill the lower triangle part of the matrix (n x n)
+        for i in range(self.n + 1, 2 * self.n):
+            for j in range(1, 2 * self.n + 1 - i):
+                self.blurring_matrix[i - self.n + j - 1, j - 1] = self.a_dictionary_for_blurring_matrix[f'a_{i}']
+    
+    def get_matrix(self):
+        """
+        Return the final motion type blurring matrix.
+        """
+        return self.blurring_matrix
+    
+    def get_dictionary(self):
+        """
+        Return the dictionary containing the a_i values used to generate the matrix.
+        """
+        return self.a_dictionary_for_blurring_matrix
+
+def convert_RGB_RGBA_to_grayscale(img):
+    img = np.copy(img)
+    # Check if the image has 3 or 4 channels (RGB or RGBA)
+    if len(img.shape) == 3 and img.shape[2] in [3, 4]:
+        # Image is RGB or RGBA, so convert it to grayscale
+        if img.shape[2] == 4:  # RGBA image, we need to remove the alpha channel
+            img_rgb = img[:, :, :3]  # Take only the RGB channels
+        else:
+            img_rgb = img  # It's already an RGB image
+
+        # Convert to grayscale using the weighted average
+        img_gray = 0.2989 * img_rgb[:, :, 0] + 0.5870 * img_rgb[:, :, 1] + 0.1140 * img_rgb[:, :, 2]
+        return img_gray
+    else:
+        # Image is already grayscale
+        img_gray = img  # No conversion needed
+        return img_gray
+
+
+def permutation_matrix(P):
+    """
+    convert a permutation array P to a sparse permutation matrix(column permutation)
+
+    parameter:
+    - P: permutation array, length=n, P = [2, 0, 1] implies the first column goes to third column, the second column goes to the first column, the third column goes to second column
+
+    return:
+    - P_matrix: sparse permutation matrix, shape:(n, n)
+    """
+    n = len(P)
+    row_indices = np.arange(n)
+    col_indices = P
+    data = np.ones(n)
+    P_matrix = csr_matrix((data, (row_indices, col_indices)), shape=(n, n))
+    return P_matrix
+
+
+def precompute_qr_pivoting(A, tol=1e-10):
+    """
+    执行 QR 分解（带列选主元），并返回分解结果和秩。
+
+    参数:
+    - A: 输入矩阵，形状为 (n, n)
+    - tol: 判断秩的容差
+
+    返回:
+    - Q: 正交矩阵，形状为 (n, r)
+    - R1: 上三角矩阵，形状为 (r, r)
+    - P: 排列数组，长度为 n
+    - r: 矩阵的秩
+    - n: A.shape[1]
+    """
+    print("正在执行 QR 分解（带列选主元）...")
+    Q, R, P = qr(A, pivoting=True, mode='economic')
+    print("QR 分解完成。")
+    
+    # 计算 Q^T A P = [R S; 0 0]
+    # 确定矩阵的秩
+    diag_R = np.abs(np.diag(R))
+    r = np.sum(diag_R > tol)
+    print(f"估计的矩阵秩: {r}")
+    
+    # 提取 R1
+    R1 = R[:r, :r]
+
+    P = permutation_matrix(P) 
+    n = A.shape[1]
+    
+    return Q, n, R1, P, r
+
+def solve_AX_equals_B_QRpivoting_using_precomputed_qr(Q, n, R1, P, r, B):
+    """
+    使用预先计算的 QR 分解结果，求解 AX = B。
+
+    参数:
+    - Q: 正交矩阵，形状为 (n, r)
+    - n: the shape[0] of 
+    - R1: 上三角矩阵，形状为 (r, r)
+    - P: 排列数组，长度为 n
+    - r: 矩阵的秩
+    - B: 目标矩阵，形状为 (n, m)
+
+    返回:
+    - X: 解矩阵，形状为 (n, m)
+    """
+    # 计算 Q^T @ B
+    Qt_B = np.dot(Q.T, B)
+    
+    # 只需要前 r 行
+    Qt_B1 = Qt_B[:r, :]
+    
+    # 求解 R1 @ X1 = Qt_B1
+    print("正在求解 R1 @ X1 = Qt_B1...")
+    X1 = solve_triangular(R1, Qt_B1)
+    print("解 X1 计算完成。")
+    
+    # 构造 [X1; 0]
+    X_temp = np.zeros((n, B.shape[1]))
+    X_temp[:r, :] = X1
+
+    X = P @ X_temp
+    
+    return X
+
+
+def solve_AX_equals_B_QRpivoting(A, B, tol=1e-10):
+    """
+    使用优化后的 QR 分解方法解决 AX = B。
+
+    参数:
+    - A: 输入矩阵，形状为 (n, n)
+    - B: 目标矩阵，形状为 (n, m)
+    - tol: 判断秩的容差
+
+    返回:
+    - X: 解矩阵，形状为 (n, m)
+    """
+    # 预先计算 QR 分解
+    Q, n, R1, P, r = precompute_qr_pivoting(A, tol)
+    
+    # 使用预计算的 QR 分解求解
+    X = solve_AX_equals_B_QRpivoting_using_precomputed_qr(Q, n, R1, P, r, B)
+    
+    return X
+
+
+
+
+
+def recover_matrix_from_blurred_matrix_QR(blurred_matrix, n, j_Aleft, k_Aleft, j_Aright, k_Aright):
+    blurred_matrix=np.copy(blurred_matrix)
+
+    # find Aleft matrix
+    motion_blurring_Aleft = MotionTypeBlurringMatrix(n, k_Aleft, j_Aleft)
+    Aleft = motion_blurring_Aleft.get_matrix()
+ 
+    # find Aright matrix
+    motion_blurring_Aright = MotionTypeBlurringMatrix(n, k_Aright, j_Aright)
+    Aright = motion_blurring_Aright.get_matrix()
+
+    
+    XtimesAright = solve_AX_equals_B_QRpivoting(Aleft, blurred_matrix, tol=1e-10)
+    Aright_inv = np.linalg.inv(Aright)
+    X = np.dot(XtimesAright, Aright_inv)
+    return X
+
+
+
+im = Image.open(blurred_image_path) 
+img = np.array(im)
+img = img.astype(np.float64) / 255
+print("before convert_RGB_RGBA_to_grayscale", img.shape)
+img = convert_RGB_RGBA_to_grayscale(img)
+print("after convert_RGB_RGBA_to_grayscale", img.shape)
+# plt.figure(1)
+# plt.axis('off')
+# plt.gray()
+# plt.imshow(img)
+# plt.show()
+blurred_matrix=np.copy(img)
+m, n = blurred_matrix.shape
+
+
+
+recovered_matrix_QR = recover_matrix_from_blurred_matrix_QR(img, n, j_Aleft,k_Aleft,j_Aright,k_Aright)
+# Save the resulting image
+plt.figure(1)
+plt.axis('off')
+plt.gray()
+plt.imshow(recovered_matrix_QR)
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+def pre_calculate(A, tol=1e-10):
+    """
+    Perform QR decomposition with column pivoting and determine the rank.
+    
+    Parameters:
+    - A: Input matrix of shape (n, n)
+    - tol: Tolerance for rank determination
+    
+    Returns:
+    - Q: Orthogonal matrix from QR decomposition
+    - R1: Upper triangular matrix corresponding to the rank
+    - r: Rank of the matrix
+    """
+    # QR decomposition with pivoting
+    print("doing QR decomposition with pivoting ...")
+    Q, R, P = qr(A, pivoting=True, mode='full') # Q: (m, m) R: (m, n)
+    print("QR decomposition done")
+
+    # get rank of matrix
+    diag_R = np.abs(np.diag(R))
+    r = np.sum(diag_R > tol)
+    print(f"the rank of matrix is: {r}")
+
+    # get R1 and c1
+    R1 = R[:r, :r]  
+
+    return Q, R1, r
+
+
+
+
+
+
+def least_squares_solution_after_precalculation(Q, R1, r, b, tol=1e-10):
+    """
+    using QR decomposition to solve least square problem, fit for rank deficiency
+    according to the formula of lecture slides to construct solution: X = P @ [R_inverse @ c1, 0, ..., 0]^T 
+    in my project, I find P is just Identity
+
+    parameter:
+    - Q: Orthogonal matrix from QR decomposition: (m, n)
+    - R1: Upper triangular matrix corresponding to the rank of A: (r,r)
+    - r: Rank of the matrix A
+    - b: target vector, (m,1)
+    - tol: default: 1e-10
+
+    return:
+    - x: solution to least square problem: (n,1)
+    """
+
+    # compute Q^T b
+    Qt_b = np.dot(Q.T, b)
+    # compute c1
+    c1 = Qt_b[:r]
+
+    # solve R1 @ x1 = c1 to get R1_Inverse * c1
+    x1 = solve_triangular(R1, c1)
+    
+    # construct [x1, 0, ..., 0]^T
+    x_temp = np.zeros(Q.shape[1])
+    x_temp[:r] = x1
+
+    # I already know the P is I
+    x = (x_temp)
+    return x
+
+def solve_AX_equals_B_using_qr_pivoting(A, B, tol=1e-10):
+    """
+    use least_squares_solution_after_precalculation to solve AX = B。
+    
+    parameter:
+    - A:  (m, n)
+    - B: target matrix: (n, n)
+    - tol: defalut: 1e-10
+    
+    return:
+    - X: solution of AX=B: (n, n)
+    """
+    n = A.shape[1]
+    X = np.zeros_like(B)  #initialization
+    
+    Q, R1, r = pre_calculate(A, tol=1e-10)
+
+    for i in range(n):
+        b = B[:, i]
+        x = least_squares_solution_after_precalculation(Q, R1, r, b, tol=1e-10)
+        X[:, i] = x  # put it into the i th column of X
+    
+    return X

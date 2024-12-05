@@ -1,0 +1,137 @@
+Companion matrix of p(x):
+[[ 0.000e+00  0.000e+00  0.000e+00  1.800e+05]
+ [ 1.000e+00  0.000e+00  0.000e+00 -8.100e+03]
+ [ 0.000e+00  1.000e+00  0.000e+00 -7.175e+03]
+ [ 0.000e+00  0.000e+00  1.000e+00  3.240e+02]]
+
+now the matrix size is 4
+4th eigenvalue is found at iteration 4
+
+now the matrix size is 3
+3th eigenvalue is found at iteration 3
+
+now the matrix size is 2
+2th eigenvalue is found at iteration 5
+
+now the matrix size is 1
+the last eigenvalue is immediately found
+
+Roots of p(x):
+Root 1: -5.000000
+Root 2: 5.000000
+Root 3: 24.000000
+Root 4: 300.000000
+
+
+Companion matrix of q(x):
+[[ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00]
+ [ 1.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00 -1.94906250e+09]
+ [ 0.00000000e+00  1.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00 -4.54612500e+08]
+ [ 0.00000000e+00  0.00000000e+00  1.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  3.52378125e+08]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  6.64211250e+07]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   1.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00 -1.73671750e+07]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  1.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00 -1.67681500e+06]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  1.00000000e+00  0.00000000e+00
+   0.00000000e+00  2.51447000e+05]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00
+   0.00000000e+00 -1.00810000e+04]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   1.00000000e+00  1.67000000e+02]]
+
+now the matrix size is 10
+10th eigenvalue is found at iteration 10
+
+now the matrix size is 9
+9th eigenvalue is found at iteration 2
+
+now the matrix size is 8
+8th eigenvalue is found at iteration 4
+
+now the matrix size is 7
+7th eigenvalue is found at iteration 2
+
+now the matrix size is 6
+6th eigenvalue is found at iteration 4
+
+now the matrix size is 5
+5th eigenvalue is found at iteration 3
+
+now the matrix size is 4
+4th eigenvalue is found at iteration 4
+
+now the matrix size is 3
+3th eigenvalue is found at iteration 19
+
+now the matrix size is 2
+2th eigenvalue is found at iteration 1
+
+now the matrix size is 1
+the last eigenvalue is immediately found
+
+Roots of q(x):
+Root 1: -5.000000
+Root 2: -3.000002
+Root 3: -2.999998
+Root 4: 0.000000
+Root 5: 3.000000
+Root 6: 5.000000
+Root 7: 30.000000
+Root 8: 35.000000
+Root 9: 50.000000
+Root 10: 55.000000
+
+Companion matrix of modified_p(x):
+[[ 0.000e+00  0.000e+00  0.000e+00 -1.800e+05]
+ [ 1.000e+00  0.000e+00  0.000e+00  8.100e+03]
+ [ 0.000e+00  1.000e+00  0.000e+00 -7.225e+03]
+ [ 0.000e+00  0.000e+00  1.000e+00  3.240e+02]]
+
+we can find from graph that modified polynomial p(x) only has two real roots, that means there are complex roots there, 
+so qr algorithm with rayleigh quotient shift can not handle it, thus, I try to use wilkinson shift.
+
+Now processing 4x4 sub-matrix.
+4th eigenvalue found at iteration 3.
+here is the convergence matrix for4*4 size:
+[[    -0.0033+0.j     -3.843 +0.j    600.2285+0.j 180071.2433+0.j]
+ [     0.9997+0.j      0.1362+0.j    -21.2312+0.j  -6369.4574+0.j]
+ [     0.    +0.j      0.8472+0.j     23.8671+0.j   7158.3256+0.j]
+ [     0.    +0.j      0.    +0.j      0.    +0.j    300.    +0.j]]
+
+Now processing 3x3 sub-matrix.
+3th eigenvalue found at iteration 4.
+here is the convergence matrix for3*3 size:
+[[  3.5515+0.j -24.4905+0.j 593.3412+0.j]
+ [  1.5358+0.j  -3.5515+0.j  89.7445+0.j]
+ [  0.    +0.j  -0.    +0.j  24.    +0.j]]
+
+Now processing 2x2 sub-matrix.
+2th eigenvalue found at iteration 1.
+here is the convergence matrix for2*2 size:
+[[  0.    +5.j     -22.8048+7.5701j]
+ [  0.    +0.j       0.    -5.j    ]]
+
+Now processing 1x1 sub-matrix.
+The last eigenvalue is immediately found.
+
+Roots of modified_p(x):
+Root 1: 0.000000+5.000000j
+Root 2: 0.000000-5.000000j
+Root 3: 24.000000+0.000000j
+Root 4: 300.000000+0.000000j
